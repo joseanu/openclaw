@@ -20,6 +20,7 @@ env:
 
 jobs:
   get-versions:
+    if: github.repository == 'coollabsio/openclaw'
     runs-on: ubuntu-24.04
     outputs:
       versions: ${{ steps.fetch.outputs.versions }}
@@ -47,6 +48,7 @@ jobs:
           fi
 
   check-base:
+    if: github.repository == 'coollabsio/openclaw'
     runs-on: ubuntu-24.04
     needs: get-versions
     outputs:
@@ -73,7 +75,7 @@ jobs:
 
   build-base:
     needs: [get-versions, check-base]
-    if: needs.check-base.outputs.missing_versions != '[]'
+    if: github.repository == 'coollabsio/openclaw' && needs.check-base.outputs.missing_versions != '[]'
     strategy:
       fail-fast: false
       matrix:
@@ -127,7 +129,7 @@ jobs:
 
   merge-base-manifest:
     needs: [get-versions, check-base, build-base]
-    if: always() && needs.check-base.outputs.missing_versions != '[]' && needs.build-base.result == 'success'
+    if: github.repository == 'coollabsio/openclaw' && always() && needs.check-base.outputs.missing_versions != '[]' && needs.build-base.result == 'success'
     strategy:
       matrix:
         version: ${{ fromJson(needs.check-base.outputs.missing_versions) }}
@@ -172,7 +174,7 @@ jobs:
 
   build-final:
     needs: [get-versions, check-base, merge-base-manifest]
-    if: always() && (needs.merge-base-manifest.result == 'success' || needs.merge-base-manifest.result == 'skipped')
+    if: github.repository == 'coollabsio/openclaw' && always() && (needs.merge-base-manifest.result == 'success' || needs.merge-base-manifest.result == 'skipped')
     strategy:
       fail-fast: false
       matrix:
@@ -226,7 +228,7 @@ jobs:
 
   merge-final-manifest:
     needs: [get-versions, build-final]
-    if: always() && needs.build-final.result == 'success'
+    if: github.repository == 'coollabsio/openclaw' && always() && needs.build-final.result == 'success'
     strategy:
       matrix:
         version: ${{ fromJson(needs.get-versions.outputs.versions) }}
@@ -285,7 +287,7 @@ jobs:
 
   summary:
     needs: [get-versions, merge-final-manifest]
-    if: always() && needs.merge-final-manifest.result == 'success'
+    if: github.repository == 'coollabsio/openclaw' && always() && needs.merge-final-manifest.result == 'success'
     runs-on: ubuntu-24.04
     steps:
       - name: Generate summary
