@@ -59,10 +59,11 @@ services:
       - WHATSAPP_ENABLED=$WHATSAPP_ENABLED
       - OPENCLAW_DOCKER_APT_PACKAGES=$OPENCLAW_DOCKER_APT_PACKAGES
       - RCLONE_CONFIG=$RCLONE_CONFIG
+      - NOTION_API_KEY=$NOTION_API_KEY
+      - DATABASE_URL=$DATABASE_URL
     volumes:
       - openclaw-data:/data
-      # Optional: custom JSON config for complex settings (groups, plugins, etc.)
-      # - ./my-openclaw.json:/app/config/openclaw.json
+      - homebrew:/home/linuxbrew/.linuxbrew
     depends_on:
       browser:
         condition: service_healthy
@@ -97,3 +98,4 @@ services:
 volumes:
   openclaw-data:
   browser-data:
+  homebrew:
