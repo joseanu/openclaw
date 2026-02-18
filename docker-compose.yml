@@ -61,6 +61,8 @@ services:
       - RCLONE_CONFIG=$RCLONE_CONFIG
       - NOTION_API_KEY=$NOTION_API_KEY
       - DATABASE_URL=$DATABASE_URL
+      - GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD}
+      - GOG_ACCOUNT=${GOG_ACCOUNT}
     volumes:
       - openclaw-data:/data
       - homebrew:/home/linuxbrew/.linuxbrew
