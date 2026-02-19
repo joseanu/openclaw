@@ -531,7 +531,7 @@ if (process.env.WHATSAPP_ENABLED === "true" || process.env.WHATSAPP_ENABLED === 
   console.log("[configure] configuring WhatsApp channel (from env)");
   ensure(config, "channels");
   const wa = config.channels.whatsapp = {}; // full overwrite — env vars are authoritative
-  wa.enabled = true;
+  // Activation is gated by WHATSAPP_ENABLED; whatsapp.enabled is not a valid config key.
 
   // strings
   if (process.env.WHATSAPP_DM_POLICY)        wa.dmPolicy = process.env.WHATSAPP_DM_POLICY;
