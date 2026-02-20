@@ -67,6 +67,7 @@ services:
       - openclaw-data:/data
       - homebrew:/home/linuxbrew/.linuxbrew
       - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes/yk8s008w84sswoookogkc040_openclaw-data/_data:/var/lib/docker/volumes/yk8s008w84sswoookogkc040_openclaw-data/_data
     depends_on:
       browser:
         condition: service_healthy
