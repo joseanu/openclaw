@@ -5,7 +5,14 @@ USER root
 # 1. Dependencias base (seguro de ejecutar aunque upstream ya las traiga)
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    ca-certificates curl file git build-essential procps \
+    ca-certificates curl file git build-essential procps gnupg \
+  && install -m 0755 -d /etc/apt/keyrings \
+  && curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc \
+  && chmod a+r /etc/apt/keyrings/docker.asc \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" > /etc/apt/sources.list.d/docker.list \
+  && apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    docker-ce-cli \
   && rm -rf /var/lib/apt/lists/*
 
 # 2. Instalación idempotente de rclone/uv/brew (solo si faltan)
@@ -32,7 +39,12 @@ RUN if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then \
       grep -q 'brew shellenv' /etc/bash.bashrc || echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /etc/bash.bashrc; \
     fi
 
+# Use repository scripts instead of whatever is bundled in base image.
+COPY scripts/ /app/scripts/
+RUN chmod +x /app/scripts/*.sh
+
 # Verificación
 RUN command -v rclone && rclone version \
   && command -v uv && uv --version \
-  && command -v brew && brew --version
+  && command -v brew && brew --version \
+  && command -v docker && docker --version
