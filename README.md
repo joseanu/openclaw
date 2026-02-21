@@ -301,7 +301,7 @@ Mount a persistent volume at the sidecar's profile directory (`/home/kasm-user`)
 | `WHATSAPP_MESSAGE_PREFIX` | | Inbound message prefix. |
 | `WHATSAPP_ACTIONS_REACTIONS` | `true` | Enable WhatsApp tool reactions. |
 
-If a channel env var is removed, that channel is cleaned from config on next start. WhatsApp env vars fully overwrite any existing WhatsApp config (no merge with custom JSON).
+If a channel env var is removed, that channel is cleaned from config on next start. WhatsApp env vars merge with existing WhatsApp config/custom JSON, and only provided keys are overridden.
 
 ### Provider overrides (optional)
 
@@ -368,7 +368,7 @@ Override the mount path with `OPENCLAW_CUSTOM_CONFIG` env var if needed.
 
 Arrays are replaced, not concatenated. Provider API keys are always read from env vars, never from JSON.
 
-**Note:** WhatsApp is a special case — when `WHATSAPP_ENABLED=true`, env vars fully overwrite the WhatsApp config block (custom JSON whatsapp keys are discarded). For all other channels, custom JSON keys are preserved and env vars merge on top.
+**Note:** When `WHATSAPP_ENABLED=true`, WhatsApp env vars merge on top of the existing WhatsApp config block (custom JSON keys are preserved unless explicitly overridden).
 
 ## Notes
 

@@ -530,8 +530,9 @@ if (process.env.SLACK_BOT_TOKEN && process.env.SLACK_APP_TOKEN) {
 if (process.env.WHATSAPP_ENABLED === "true" || process.env.WHATSAPP_ENABLED === "1") {
   console.log("[configure] configuring WhatsApp channel (from env)");
   ensure(config, "channels");
-  const wa = config.channels.whatsapp = {}; // full overwrite — env vars are authoritative
-  // Activation is gated by WHATSAPP_ENABLED; whatsapp.enabled is not a valid config key.
+  const wa = config.channels.whatsapp = config.channels.whatsapp || {}; // merge with existing/custom JSON
+  // Cleanup legacy invalid key if present from previous runs.
+  if (wa.enabled !== undefined) delete wa.enabled;
 
   // strings
   if (process.env.WHATSAPP_DM_POLICY)        wa.dmPolicy = process.env.WHATSAPP_DM_POLICY;
